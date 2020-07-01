@@ -1,5 +1,6 @@
 package org.andresoviedo.app.model3D.view;
 
+import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
@@ -28,6 +29,8 @@ public class ModelSurfaceView extends GLSurfaceView {
 		// Create an OpenGL ES 2.0 context.
 		setEGLContextClientVersion(2);
 
+		setTranslucent();
+
 		// This is the actual renderer of the 3D space
 		mRenderer = new ModelRenderer(this);
 		setRenderer(mRenderer);
@@ -50,6 +53,18 @@ public class ModelSurfaceView extends GLSurfaceView {
 
 	public ModelRenderer getModelRenderer(){
 		return mRenderer;
+	}
+
+	/**
+	 * 设置透明背景的方法
+	 * 这个方法需要在setRenderer之前调用才有效
+	 */
+	private void setTranslucent(){
+		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//		getHolder().setFormat(PixelFormat.RGBA_8888);
+		// 将GLSurfaceView置顶
+		setZOrderOnTop(true);
 	}
 
 }

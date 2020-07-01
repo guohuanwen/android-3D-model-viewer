@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.andresoviedo.app.model3D.demo.ExampleSceneLoader;
@@ -46,13 +47,15 @@ public class ModelActivity extends Activity {
     /**
      * Background GL clear color. Default is light gray
      */
-    private float[] backgroundColor = new float[]{0f, 0f, 0f, 1.0f};
+    private float[] backgroundColor = new float[]{0f, 0f, 0f, 0f};
 
     private ModelSurfaceView gLView;
 
     private SceneLoader scene;
 
     private Handler handler;
+
+    private Uri animUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,9 @@ public class ModelActivity extends Activity {
             if (b.getString("uri") != null) {
                 this.paramUri = Uri.parse(b.getString("uri"));
             }
+            if (b.getString("anim_uri") != null) {
+                this.animUri = Uri.parse(b.getString("anim_uri"));
+            }
             this.paramType = b.getString("type") != null ? Integer.parseInt(b.getString("type")) : -1;
             this.immersiveMode = "true".equalsIgnoreCase(b.getString("immersiveMode"));
             try {
@@ -73,7 +79,7 @@ public class ModelActivity extends Activity {
                 backgroundColor[2] = Float.parseFloat(backgroundColors[2]);
                 backgroundColor[3] = Float.parseFloat(backgroundColors[3]);
             } catch (Exception ex) {
-                // Assuming default background color
+                ex.printStackTrace();
             }
         }
         Log.i("Renderer", "Params: uri '" + paramUri + "'");
@@ -92,7 +98,9 @@ public class ModelActivity extends Activity {
         // as the ContentView for this Activity.
         try {
             gLView = new ModelSurfaceView(this);
-            setContentView(gLView);
+            setContentView(R.layout.activity_mode);
+            FrameLayout frameLayout = findViewById(R.id.content_lay);
+            frameLayout.addView(gLView);
         } catch (Exception e) {
             Toast.makeText(this, "Error loading OpenGL view:\n" +e.getMessage(), Toast.LENGTH_LONG).show();
         }
@@ -256,6 +264,10 @@ public class ModelActivity extends Activity {
 
     public Uri getParamUri() {
         return paramUri;
+    }
+
+    public Uri getAnimUri() {
+        return animUri;
     }
 
     public int getParamType() {

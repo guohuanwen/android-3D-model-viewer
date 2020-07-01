@@ -11,6 +11,7 @@ import org.andresoviedo.android_3d_model_engine.model.Camera;
 import org.andresoviedo.android_3d_model_engine.model.Object3DData;
 import org.andresoviedo.android_3d_model_engine.services.LoaderTask;
 import org.andresoviedo.android_3d_model_engine.services.Object3DBuilder;
+import org.andresoviedo.android_3d_model_engine.services.collada.ColladaLoaderAnimTask;
 import org.andresoviedo.android_3d_model_engine.services.collada.ColladaLoaderTask;
 import org.andresoviedo.android_3d_model_engine.services.stl.STLLoaderTask;
 import org.andresoviedo.android_3d_model_engine.services.wavefront.WavefrontLoaderTask;
@@ -170,7 +171,11 @@ public class SceneLoader implements LoaderTask.Callback {
             new STLLoaderTask(parent, uri, this).execute();
         } else if (uri.toString().toLowerCase().endsWith(".dae") || parent.getParamType() == 2) {
             Log.i("Object3DBuilder", "Loading Collada object from: "+uri);
-            new ColladaLoaderTask(parent, uri, this).execute();
+            if (parent.getAnimUri() == null) {
+                new ColladaLoaderTask(parent, uri, this).execute();
+            } else {
+                new ColladaLoaderAnimTask(parent, uri, parent.getAnimUri(), this).execute();
+            }
         }
     }
 

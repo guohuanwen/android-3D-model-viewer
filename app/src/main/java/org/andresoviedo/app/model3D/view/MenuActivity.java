@@ -131,7 +131,8 @@ public class MenuActivity extends ListActivity {
                 (String file) -> {
                     if (file != null) {
                         ContentUtils.provideAssets(this);
-                        launchModelRendererActivity(Uri.parse("assets://" + getPackageName() + "/" + file));
+//                        launchModelRendererActivity(Uri.parse("assets://" + getPackageName() + "/" + file));
+                        launchModelRendererActivity(Uri.parse("assets://" + getPackageName() + "/" + file), Uri.parse("assets://" + getPackageName() + "/" + "models/lz_run.DAE"));
                     }
                 });
     }
@@ -327,6 +328,22 @@ public class MenuActivity extends ListActivity {
         Log.i("Menu", "Launching renderer for '" + uri + "'");
         Intent intent = new Intent(getApplicationContext(), ModelActivity.class);
         intent.putExtra("uri", uri.toString());
+        intent.putExtra("immersiveMode", "true");
+
+        // content provider case
+        if (!loadModelParameters.isEmpty()) {
+            intent.putExtra("type", loadModelParameters.get("type").toString());
+            loadModelParameters.clear();
+        }
+
+        startActivity(intent);
+    }
+
+    private void launchModelRendererActivity(Uri uri, Uri animUrl) {
+        Log.i("Menu", "Launching renderer for '" + uri + "'");
+        Intent intent = new Intent(getApplicationContext(), ModelActivity.class);
+        intent.putExtra("uri", uri.toString());
+        intent.putExtra("anim_uri", animUrl.toString());
         intent.putExtra("immersiveMode", "true");
 
         // content provider case
